@@ -12,7 +12,7 @@ If you want to use it now.
 git clone https://github.com/Start-P/WP-Scanner/
 cd WP-Scanner
 ```
-2. Open bot.py and Replace "Input your token here" to your discord bot token.
+2. Open bot.py and Replace "Input your discord bot token here." to your discord bot token.
 3. Install Requirements
 ```py
 python3 -m pip install disnake

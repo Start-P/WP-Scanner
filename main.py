@@ -1,18 +1,17 @@
-py
 import requests
 from bs4 import BeautifulSoup
 
 class WPDoesntUse(Exception):
-    """Target site doesn't use wordpress error"""
+    """Target site doesn't use wp error"""
 
 class WPScanner:
 
     def __init__(self, site_url: str):
-        self.vulnerability_path = ["wp-includes/uploads", "wp-includes/rest-api", "wp-includes", "wp-admin", "wp-upload"]
+        self.vulnerability_path = ["wp-includes/uploads", "wp-includes/rest-api", "wp-includes", "wp-admin", "wp-upload", "wordpress/wp-content/uploads/"]
         self.session = requests.Session()
         self.site_url = site_url
         source = self.get_page_source()
-        if not "wp-content" in source or not "wp-includes" in source or not "wp-includes" in source:
+        if not "wp-content" in source and not "wp-includes" in source and not "wp-includes" in source:
             raise WPDoesntUse("Maybe this site doesn't use WordPress.")
 
     def get_page_source(self):
@@ -66,3 +65,19 @@ class WPScanner:
                 vulnerability_page_list.append(url)
 
         return vulnerability_page_list
+
+    def get_all_users(self):
+        user_list = []
+        http = "https://" if "https://" in self.site_url else "http://"
+        site_origin = http + self.site_url.replace(http, "").split("/")[0] + "/"
+        url = site_origin + "wp-json/wp/v2/users"
+        response = self.session.get(url)
+        try:
+            response_json = response.json()
+            response.raise_for_status()
+            for response in response_json:
+                user_list.append(response["name"])
+        except requests.HTTPError:
+            return None
+
+        return user_list

@@ -66,6 +66,6 @@ async def wp_scan(inter, url: str):
     embed.add_field(name="Vulneravility Pages", value=f"```\n{vulneravility_pages if vulneravility_pages else None}\n```", inline=False)
 
     await inter.edit_original_response("Done.")
-    await inter.send(embed=embed)
+    await inter.channel.send(embed=embed)
 
 bot.run(TOKEN)
